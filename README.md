@@ -3,4 +3,4 @@ this fish has been taking all of the domains under the .fish TLD and we aren't h
 
 take your revenge by killing the lil guy!!
 
-### (fish - cooking saga coming early 2025)
+### (fish - cooking saga coming sunday the 13th)
