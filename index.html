@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>harm this fish!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fff9fd;
+            margin: 0;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title {
+            max-width: 600px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .health-bar {
+            margin-bottom: 20px;
+        }
+
+        .fish {
+            max-width: 500px; 
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease; 
+            user-select: none;
+        }
+
+        .fish-hit {
+            transform: rotate(15deg); 
+        }
+
+        .damage-indicator {
+            position: absolute;
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+            opacity: 1;
+            user-select: none; 
+            transition: opacity 2s ease-out;
+        }
+
+        #play-again {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="title-image" src="/assets/title.png" alt="Game Title" class="title">
+        <button id="start-btn">Start Game</button>
+
+        <div id="game" class="hidden">
+            <div class="health-bar">
+                <img id="health-image" src="/assets/fishhealth7.png" alt="Fish Health">
+            </div>
+            <img id="fish" src="/assets/fish.png" alt="Fish" class="fish">
+        </div>
+
+        <button id="play-again">Play Again?</button>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('start-btn');
+        const titleImage = document.getElementById('title-image');
+        const gameContainer = document.getElementById('game');
+        const playAgainButton = document.getElementById('play-again');
+        const fishElement = document.getElementById('fish');
+        const healthImage = document.getElementById('health-image');
+        let currentHealth = 7;
+        let clicksRemaining = getRandomClicks();
+
+        // Start the game
+        startButton.addEventListener('click', function() {
+            gameContainer.classList.remove('hidden');
+            startButton.style.display = 'none';  
+            titleImage.style.display = 'none';   
+        });
+
+        playAgainButton.addEventListener('click', function() {
+            resetGame();
+        });
+
+        fishElement.addEventListener('click', function(event) {
+            clicksRemaining--;
+
+            showDamageIndicator(event.clientX, event.clientY);
+            fishElement.classList.add('fish-hit');  
+
+            if (clicksRemaining <= 0) {
+                currentHealth = Math.max(0, currentHealth - 1);  
+                updateHealthBar(currentHealth);
+                clicksRemaining = getRandomClicks();  
+            }
+
+            fishElement.src = '/assets/fishharmed.png';
+            setTimeout(() => {
+                fishElement.src = currentHealth > 0 ? '/assets/fish.png' : '/assets/fishdead.png'; 
+                fishElement.classList.remove('fish-hit');  
+            }, 300);  
+
+            if (currentHealth === 0) {
+                showPlayAgain();
+            }
+        });
+
+        function getRandomClicks() {
+            return Math.floor(Math.random() * 5) + 3;  
+        }
+
+        function updateHealthBar(health) {
+            if (health >= 0 && health <= 7) {
+                healthImage.src = `/assets/fishhealth${health}.png`;
+            }
+        }
+
+        function showDamageIndicator(x, y) {
+            const damage = `-${Math.floor(Math.random() * 2) + 3}!`;  // damage indicator
+            const indicator = document.createElement('div');
+            indicator.textContent = damage;
+            indicator.classList.add('damage-indicator');
+            indicator.style.left = `${x}px`;
+            indicator.style.top = `${y}px`;
+            document.body.appendChild(indicator);
+
+            setTimeout(() => {
+                indicator.style.opacity = '0';  
+                setTimeout(() => indicator.remove(), 2000);  
+            }, 2000);
+        }
+
+        function showPlayAgain() {
+            playAgainButton.style.display = 'block';  
+        }
+
+        function resetGame() {
+            currentHealth = 7;
+            healthImage.src = '/assets/fishhealth7.png';  // Reset health bar
+            fishElement.src = '/assets/fish.png';  // Reset fish image
+            playAgainButton.style.display = 'none';  // Hide "Play again?" button
+            clicksRemaining = getRandomClicks();  // Reset random clicks
+        }
+    </script>
+</body>
+</html>
