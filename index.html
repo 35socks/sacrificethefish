@@ -37,10 +37,19 @@
         .hidden {
             display: none;
         }
+        
+.health-bar img {
+    width: 100%; 
+    max-width: 500px; 
+}
 
-        .health-bar {
-            margin-bottom: 20px;
-        }
+@media (max-width: 600px) {
+    .health-bar img {
+        width: 80%; 
+        max-width: 400px; 
+    }
+}
+
 
         .fish {
             max-width: 500px; 
